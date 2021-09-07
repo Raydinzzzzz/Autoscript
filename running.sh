@@ -74,6 +74,8 @@ cron_service=$(/etc/init.d/cron status | grep Active | awk '{print $3}' | cut -d
 fail2ban_service=$(/etc/init.d/fail2ban status | grep Active | awk '{print $3}' | cut -d "(" -f2 | cut -d ")" -f1)
 wg="$(systemctl show wg-quick@wg0.service --no-page)"
 swg=$(echo "${wg}" | grep 'ActiveState=' | cut -f2 -d=)
+trgo="$(systemctl show trojan-go.service --no-page)"                                      
+strgo=$(echo "${trgo}" | grep 'ActiveState=' | cut -f2 -d=)  
 sswg=$(systemctl status wg-quick@wg0 | grep Active | awk '{print $3}' | cut -d "(" -f2 | cut -d ")" -f1)
 
 # Color Validation
@@ -183,6 +185,13 @@ if [[ $swg == "active" ]]; then
   status_wg="${GREEN}Wireguard Service Is Running ${NC}( Aktif )${NC}"
 else
   status_wg="${RED}Wireguard Service Is Not Running ${NC}( Not Aktif )${NC}"
+fi
+
+# Status Service Trojan GO
+if [[ $strgo == "active" ]]; then
+  status_trgo="${GREEN}Trojan GO Service Is Running ${NC}( Aktif )${NC}"
+else
+  status_trgo="${RED}Trojan GO Service Is Not Running ${NC}( Not Aktif )${NC}"
 fi
 
 # Status Service L2TP
@@ -329,6 +338,7 @@ echo -e "Vless HTTP  : $status_nontls_vless"
 echo -e "SSR         : $status_ssr"
 echo -e "Shadowsocks : $status_sodosok"
 echo -e "Trojan      : $status_virus_trojan"
+echo -e "Trojan GO   : $status_trgo"
 echo -e "Wireguard   : $status_wg"
 echo "------------------------------------------------------------------------" | lolcat 
 echo ""
